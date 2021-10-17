@@ -1,5 +1,3 @@
-import null as null
-
 from student import Student
 
 
