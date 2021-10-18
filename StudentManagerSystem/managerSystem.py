@@ -5,7 +5,7 @@ class StudentManager(object):
     """管理系统对象，保存学生对象"""
 
     def __init__(self):
-        self.student_list = []
+        self.student_list = [Student("Tom", "难", 18), Student("Alice", '女', 18)]
 
     # 功能入库函数
     def run(self):
@@ -55,29 +55,42 @@ class StudentManager(object):
         if student is not None:
             check = input(f"确定删除学员{name}？Y:确定,N:再考虑一下")
             if check == 'Y':
-                print(f'已删除{self.student_list.pop(student)}')
+                self.student_list.remove()
+                print(f'已删除{student}')
+
+    def modify_student(self):
+        name = input("请输入学生姓名：")
+        student = self.find_student_by_name(name)
+        if student is not None:
+            new_tel = input("请输入新的手机号：")
+            student.tel = new_tel
+
+    def search_student(self):
+        name = input("请输入学生姓名：")
+        print(f"查询学员信息结果:{self.find_student_by_name(name)}")
+
+    def show_all(self):
+        for i in self.student_list:
+            print(i)
+
+    def save_student(self):
+        print("保存学员信息")
+
+    def find_student_by_name(self, name):
+        for i in self.student_list:
+            if i.name == name:
+                return i
+        else:
+            print("查无此人")
+
+# 不定义类中方法时的写法
+# def find_student_by_name(name, student_list):
+#     for i in student_list:
+#         if i.name == name:
+#             return i
+#     else:
+#         print("查无此人")
 
 
-def modify_student(self):
-    print("修改学员信息")
-
-
-def search_student(self):
-    print("查询学员信息")
-
-
-def show_all(self):
-    # 显示所有学员
-    print("显示所有学员")
-
-
-def save_student(self):
-    print("保存学员信息")
-
-
-def find_student_by_name(self, name):
-    for i in self.student_list:
-        if i.name == name:
-            return i
-    else:
-        print("查无此人")
+# s = StudentManager()
+# s.run()
