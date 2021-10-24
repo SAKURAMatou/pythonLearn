@@ -5,12 +5,13 @@ class StudentManager(object):
     """管理系统对象，保存学生对象"""
 
     def __init__(self):
-        self.student_list = [Student("Tom", "难", 18), Student("Alice", '女', 18)]
+        self.student_list = []
 
     # 功能入库函数
     def run(self):
         # 封装管理系统的功能
-        # 1、家在学生信息
+        # 1、加载学生信息
+        self.load_student()
         while True:
             # 2、显示功能菜单
             self.show_menu()
@@ -28,7 +29,7 @@ class StudentManager(object):
             elif menu_num == 5:
                 self.show_all()
             elif menu_num == 6:
-                self.show_all()
+                self.save_student()
             elif menu_num == 7:
                 print("系统退出")
                 break
@@ -74,7 +75,10 @@ class StudentManager(object):
             print(i)
 
     def save_student(self):
-        print("保存学员信息")
+        studnetFile = open("student.data", 'w')
+        saved_lit = [i.__dict__ for i in self.student_list]
+        studnetFile.write(str(saved_lit))
+        studnetFile.close()
 
     def find_student_by_name(self, name):
         for i in self.student_list:
@@ -82,6 +86,23 @@ class StudentManager(object):
                 return i
         else:
             print("查无此人")
+
+    def load_student(self):
+        try:
+            # 先只读打开文件
+            f = open("student.data", 'r')
+        except:
+            # print(f'异常{ex}')
+            # 异常时说明没有文件通过写的方式打开，
+            f = open("student.data", 'w')
+        else:
+            read = f.read()
+            read = eval(read)
+            self.student_list = [s for s in read]
+            print(type(read), read)
+        finally:
+            f.close()
+
 
 # 不定义类中方法时的写法
 # def find_student_by_name(name, student_list):
