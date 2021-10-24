@@ -268,6 +268,8 @@ for i in range(2,6,2):
 
 通过单引号，双引号，三引号包裹的内容为字符串；若想要在字符串中出现单引号或双引号，则外层需要使用不一样的引号包裹即可，或者使用三引号
 
+### 原始字符串
+
 原始字符串符号r，取消字符串中的转义字符效果
 
 ```python
@@ -276,6 +278,8 @@ print(type(my_str), my_str)
 s2=r"hello \n world"
 输出hello \n world
 ```
+
+repr():获取原始字符串方法
 
 ### 字符串格式化
 
@@ -441,6 +445,16 @@ my_list2= list()
 ```
 
 列表支持切片和下标操作；列表可以使用下标操作修改数据
+
+```python
+my_list = ['P']
+my_list[1:] = list('ython')
+print(my_list)
+#输出
+['P', 'y', 't', 'h', 'o', 'n']
+```
+
+
 
 #### 列表添加数据
 
@@ -1633,7 +1647,7 @@ print(dog1.tooth,dog2.tooth)
 
 #### 类方法
 
-类方法：@classmethod标识的方法为类方法；第一个方法必须是类对象，入参`cls`
+类方法：@classmethod标识的方法为类方法；第一个方法必须是类对象，入参名称一般为`cls`
 
 类方法一般和类属性配合使用，在需要操作私有属性等时定义类方法
 
@@ -1679,6 +1693,79 @@ Dog.get_info()
 这是静态方法
 这是静态方法
 ```
+
+### 序列和映射协议
+
+协议通常指的是规范行为的规则  
+
+序列和映射基本上是元素（ item）的集合，要实现它们的基本行为（协议），不可变对象需
+要实现2个方法，而可变对象需要实现4个  
+
+`__len__(self)`：这个方法应返回集合包含的项数，对序列来说为元素个数，对映射来说
+为键值对数。如果`__len__`返回零（且没有实现覆盖这种行为的`__nonzero__`），对象在布尔上下文中将被视为假（就像空的列表、元组、字符串和字典一样）。
+`__getitem__(self, key)`：这个方法应返回与指定键相关联的值。对序列来说，键应该是0~n -1的整数（也可以是负数，这将在后面说明），其中n为序列的长度。对映射来说，
+键可以是任何类型。
+`__setitem__(self, key, value)`：这个方法应以与键相关联的方式存储值，以便以后能够使用`__getitem__`来获取。当然，仅当对象可变时才需要实现这个方法。
+` __delitem__(self, key)`：这个方法在对对象的组成部分使用`__del__语`句时被调用，应删除与key相关联的值。同样，仅当对象可变（且允许其项被删除）时，才需要实现这个方法。  
+
+```python
+def check_index(key):
+    """指定的键是否是可接受的索引？键必须是非负整数，才是可接受的。如果不是整数，
+    将引发TypeError异常；如果是负数，将引发Index
+    Error异常（因为这个序列的长度是无穷的）"""
+    if not isinstance(key, int): raise TypeError
+    if key < 0: raise IndexError
+
+
+class ArithmeticSequence:
+    def __init__(self, start=0, step=1):
+        """初始化序列
+        changed：一个字典，包含用户修改的信息"""
+        self.start = start
+        self.step = step
+        self.changed = {}
+
+    def __getitem__(self, key):
+        """从序列中获取元素"""
+        check_index(key)
+        try:
+            return self.changed[key]
+        except:
+            return self.start + key * self.step
+
+    def __setitem__(self, key, value):
+        """修改值"""
+        check_index(key)
+        self.changed[key] = value
+```
+
+#### 自定义属性property
+
+property的四个参数get set del doc
+
+property其实并不是函数，而是一个类。它的实例包含一些魔法方法，而所有的魔法都是由这些方法完成的。这些魔法方法为`__get__`、` __set__`和`__delete__`，它们一道定义了所谓的描述符协议。 只要对象实现了这些方法中的任何一个，它就是一个描述符。描述符的独特之处在于其访问方式。例如，读取属性（具体来说，是在实例中访问类中定义的属性时，如果它关联的是一个实现了`__get__`的对象，将不会返回这个对象，而是用方法`__get__`并将其结果返回。   
+
+```python
+class Rectangle:
+    def __init__(self):
+        self.width = 0
+        self.height = 0
+
+    def set_size(self, size):
+        self.width, self.height = size
+
+    def get_size(self):
+        return self.width, self.height
+
+    size = property(get_size, set_size)
+    
+r = Rectangle()
+r.set_size((12, 4))
+print(r.size)
+#输出(12, 4)
+```
+
+
 
 ## 异常
 
@@ -1781,6 +1868,31 @@ def main():
 
 main()
 ```
+
+### 异常抛出
+
+发生异常的地方通过raise 异常将异常抛出，发生异常的地方不处理，在调用的地方处理
+
+```python
+def func():
+    try:
+        return 1 / 0
+        print('无异常')
+    except Exception as e:
+        print('异常发生行')
+        raise e
+
+
+try:
+    func()
+except:
+    print('调用的方法发生异常')
+
+```
+
+### 警告warings
+
+使用模块warnings中的函数war 函数可以指出可能到异常而不是等异常发生；通常警告只打印一条日志
 
 ## 包和模块
 
@@ -1969,4 +2081,64 @@ moudle2.method2()
 ### 高阶函数
 
 接收其它函数作为入参的函数为高阶函数
+
+## 迭代器、生成器
+
+### 迭代器
+
+实现`__iter__`的类可以作为一个迭代器。方法`__iter__`返回一个迭代器，它是包含方法`__next__`的对象，而调用这个方法时可不提供任何参数。当你调用方法`__next__`时，迭代器应返回其下一个值。如果迭代器没有可供返回的值，应引发StopIteration异常。 
+
+迭代器的类应该包含 `__iter__`和`__next__`方法；`__next__`方法中定义迭代规则；
+
+```python
+#求斐波拉切数的迭代器
+class Fibs(object):
+    def __init__(self):
+        self.a = 0
+        self.b = 1
+
+    def __next__(self):
+        self.a, self.b = self.b, self.a + self.b
+        return self.a
+
+    def __iter__(self):
+        return self
+
+
+f = Fibs()
+for i in f:
+    if i > 100:
+        print(i)
+        break
+```
+
+### 生成器
+
+包含yield语句的函数都被称为生成器 ，调用时返回一个迭代器
+
+生成器不是使用return返回一个值，而是可以生成多个值，每次一个。每次使用yield生成一个值后，函数都将冻结，即在此停止执行，等待被重新唤醒。被重新唤醒后，函数将从停止的地方开始继续执行  
+
+#### 递归式生成器
+
+```python
+#将列表的所有元素展开
+def flatten(nested):
+    try:
+        try:
+            nested + ""
+        except TypeError:
+            pass
+        else:
+            TypeError
+        for sub_List in nested:
+            for e in flatten(sub_List):
+                yield e
+    except TypeError:
+        yield nested
+
+
+for i in flatten(nested):
+    print(i, end="-")
+
+```
 
