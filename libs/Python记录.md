@@ -2191,6 +2191,86 @@ timeit 模块计算代码运行时间
 
 Shelve是一个文件持久化保存方法，将对象二进制方式保存到文件中
 
+### json
+
+操作字json
+
+| json.dumps（dump） | 将 Python 对象编码成 JSON 字符串         |
+| ------------------ | ---------------------------------------- |
+| json.loads（load） | 将已编码的 JSON 字符串解码为 Python 对象 |
+
+```python
+json.dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, encoding="utf-8", default=None, sort_keys=False, **kw)
+```
+
+sort_keys：根据key排序
+
+indent：非负的整数，表示打印的缩进
+
+dumps和dump区别在于，dump函数除了要转化的对象还需要一个文件操作对象fp用于进行文件操作
+
+loads和load区别类似
+
+```python
+#默认输出
+print(json.dumps(data))
+[{"a": 1, "c": 3, "b": 2, "e": 5, "d": 4}]
+# key排序
+print(json.dumps(data, sort_keys=True))
+[{"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}]
+#格式化缩进
+print(json.dumps(data, indent=4))
+[
+    {
+        "a": 1,
+        "c": 3,
+        "b": 2,
+        "e": 5,
+        "d": 4
+    }
+]
+```
+
+转化为json对象loads
+
+```python
+json.loads(s, *, cls=None, object_hook=None, parse_float=None,
+        parse_int=None, parse_constant=None, object_pairs_hook=None, **kw)
+```
+
+
+
 ## 正则表达式
 
 re模块提供了正则表达式的支持
+
+## 网络编程
+
+socket模块用于处理请求，提供了两个方法： send和recv（表示receive）。要发送数据，可调用方法send并提供一个字符串；要接收数据，可调用recv并指定最多接收多少个字节的数据。如果不
+确定该指定什么数字， 1024是个不错的选择  
+
+```python
+发送数据
+import socket
+
+s = socket.socket()
+host = socket.gethostname()
+port = 1234
+s.bind((host, port))
+s.listen(5)
+while True:
+    c, addr = s.accept()
+    print('Got connection from', addr)
+    c.send('Thank you for connecting')
+    c.close()
+    
+#接收数据
+
+import  socket
+s = socket.socket()
+host = socket.gethostname()
+port = 1234
+s.connect((host, port))
+print(s.recv(1024))
+```
+
