@@ -2,7 +2,8 @@ import datetime
 import random
 import uuid
 
-from bmfwmodels import CnsCinfo
+# from bmfwmodels import CnsCinfo
+from models_8 import CnsCinfo
 from faker import Faker
 
 fake = Faker(['zh_cn'])
@@ -11,10 +12,11 @@ fake = Faker(['zh_cn'])
 def initCinfo():
     cinfo = CnsCinfo()
     cinfo.ROWGUID = uuid.uuid4()
-    cinfo.rqsttitle = fake.text(random.randint(10, 50))
+    cinfo.RQSTTITLE = fake.text(random.randint(10, 50))
     cinfo.RQSTCONTENT = fake.text(random.randint(100, 500))
     cinfo.RQSTSOURCE = 'WZ'
     cinfo.RQSTAREACODE = '3205'
+    cinfo.AREACODE = '3205'
     cinfo.CSTATUS = '0'
     cinfo.RQSTPERSON = fake.name()
     cinfo.LINKNUMBER = fake.phone_number()
@@ -23,21 +25,25 @@ def initCinfo():
     cinfo.ISSECRET = '0'
     cinfo.ISIMPT = '30'
     cinfo.REPLAYTYPE = '1'
+    cinfo.SERIALNUM = cinfo.RQSTSOURCE + datetime.datetime.now().strftime('%Y%m%d') + str(random.randint(2000, 3000))
+    cinfo.WEBRQSTTIME = cinfo.RQSTTIME
     return cinfo
 
 
 def getCinfoList(count):
     res = []
+    resSQL = []
     if count is None:
         count = 5
 
     for i in range(count):
         cinfo = initCinfo()
-        res.append(getInsertSql(cinfo))
+        res.append(cinfo)
+        resSQL.append(getInsertSql(cinfo))
 
     file = open('insertToCinfo.sql', 'w+', encoding='utf-8')
     try:
-        for c in res:
+        for c in resSQL:
             file.write(c)
             file.write("\n")
         file.flush()
