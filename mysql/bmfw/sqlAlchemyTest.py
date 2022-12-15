@@ -31,7 +31,8 @@ def generateEngine(user, password, host, dbname):
 
     with Session.begin() as session:
         try:
-            cinfo_list = addCinfo.getCinfoList(5)
+            add_cinfo = addCinfo.AddCinfo()
+            cinfo_list = add_cinfo.getCinfoList(5)
             for c in cinfo_list:
                 session.add(c)
                 print(type(c))

@@ -6,54 +6,59 @@ import uuid
 from models_8 import CnsCinfo
 from faker import Faker
 
-fake = Faker(['zh_cn'])
+from SerialnumGenerate import redisUtils, getSerialnum
 
 
-def initCinfo():
-    cinfo = CnsCinfo()
-    cinfo.ROWGUID = uuid.uuid4()
-    cinfo.RQSTTITLE = fake.text(random.randint(10, 50))
-    cinfo.RQSTCONTENT = fake.text(random.randint(100, 500))
-    cinfo.RQSTSOURCE = 'WZ'
-    cinfo.RQSTAREACODE = '3205'
-    cinfo.AREACODE = '3205'
-    cinfo.CSTATUS = '0'
-    cinfo.RQSTPERSON = fake.name()
-    cinfo.LINKNUMBER = fake.phone_number()
-    cinfo.CLIENGGUID = uuid.uuid4()
-    cinfo.RQSTTIME = datetime.datetime.now()
-    cinfo.ISSECRET = '0'
-    cinfo.ISIMPT = '30'
-    cinfo.REPLAYTYPE = '1'
-    cinfo.SERIALNUM = cinfo.RQSTSOURCE + datetime.datetime.now().strftime('%Y%m%d') + str(random.randint(2000, 3000))
-    cinfo.WEBRQSTTIME = cinfo.RQSTTIME
-    return cinfo
+class AddCinfo():
+    fake = Faker(['zh_cn'])
+    redisConnec = redisUtils().r
 
+    def initCinfo(self):
+        cinfo = CnsCinfo()
+        cinfo.ROWGUID = uuid.uuid4()
+        cinfo.RQSTTITLE = self.fake.text(random.randint(10, 50))
+        cinfo.RQSTCONTENT = self.fake.text(random.randint(100, 500))
+        cinfo.RQSTSOURCE = 'WZ'
+        cinfo.RQSTAREACODE = '3205'
+        cinfo.AREACODE = '3205'
+        cinfo.CSTATUS = '0'
+        cinfo.RQSTPERSON = self.fake.name()
+        cinfo.LINKNUMBER = self.fake.phone_number()
+        cinfo.CLIENGGUID = uuid.uuid4()
+        cinfo.RQSTTIME = datetime.datetime.now()
+        cinfo.ISSECRET = '0'
+        cinfo.ISIMPT = '30'
+        cinfo.REPLAYTYPE = '1'
+        cinfo.SERIALNUM = cinfo.RQSTSOURCE + datetime.datetime.now().strftime('%Y%m%d') + str(
+            random.randint(2000, 3000))
+        cinfo.WEBRQSTTIME = cinfo.RQSTTIME
+        cinfo.SERIALNUM = getSerialnum(sLen=5, flag=cinfo.RQSTSOURCE)
+        return cinfo
 
-def getCinfoList(count):
-    res = []
-    resSQL = []
-    if count is None:
-        count = 5
+    def getCinfoList(self, count):
+        res = []
+        resSQL = []
+        if count is None:
+            count = 5
 
-    for i in range(count):
-        cinfo = initCinfo()
-        res.append(cinfo)
-        resSQL.append(getInsertSql(cinfo))
+        for i in range(count):
+            cinfo = self.initCinfo()
+            res.append(cinfo)
+            resSQL.append(getInsertSql(cinfo))
 
-    file = open('insertToCinfo.sql', 'w+', encoding='utf-8')
-    try:
-        for c in resSQL:
-            file.write(c)
-            file.write("\n")
-        file.flush()
-        print("已生成")
-    except Exception as e:
-        print(e)
-    finally:
-        file.close()
+        file = open('insertToCinfo.sql', 'w+', encoding='utf-8')
+        try:
+            for c in resSQL:
+                file.write(c)
+                file.write("\n")
+            file.flush()
+            print("已生成")
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
 
-    return res
+        return res
 
 
 def getInsertSql(cinfo: CnsCinfo):
@@ -72,4 +77,4 @@ def getInsertSql(cinfo: CnsCinfo):
 
 
 if __name__ == '__main__':
-    getCinfoList(5)
+    AddCinfo().getCinfoList(5)
