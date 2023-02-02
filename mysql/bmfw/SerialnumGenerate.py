@@ -4,7 +4,7 @@ import time
 redisSetting = {
     "host": "192.168.233.5",
     "port": 6379,
-    "db": 0
+    "db": 1
 }
 nowTimeStr = time.strftime('%Y%m%d', time.localtime())
 

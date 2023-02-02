@@ -32,9 +32,13 @@ switchObj = {
 
 if __name__ == '__main__':
     commend = input("输入类型：")
-    commends = re.findall("\w+=\d+", commend)
-    for c in commends:
-        m = c.split("=")
-        func = switchObj.get(m[0])
-        if func is not None:
-            func(m[1])
+    if 'random' == commend:
+        generateContent(random.randint(100, 500))
+        generateTitle(random.randint(2, 100))
+    else:
+        commends = re.findall("\w+=\d+", commend)
+        for c in commends:
+            m = c.split("=")
+            func = switchObj.get(m[0])
+            if func is not None:
+                func(m[1])

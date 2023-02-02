@@ -45,4 +45,5 @@ def generateEngine(user, password, host, dbname):
 
 if __name__ == "__main__":
     # generateEngine('root', 'Infra5@Gep0int', '192.168.204.180:3306', 'cnsbzb_v9.4kf')
-    generateEngine('root', 'Gepoint', '192.168.212.24:3306', 'cnsbzb_v8_test')
+    # generateEngine('root', 'Gepoint', '192.168.212.24:3306', 'cnsbzb_v8_test')
+    generateEngine('root', 'Gepoint', '192.168.212.24:3306', 'cnsbzb_v9.2.10_safe')
