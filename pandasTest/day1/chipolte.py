@@ -13,7 +13,25 @@ chipo = pd.read_csv(dataName, sep='\t')
 # 修改打印的设置
 pd.set_option('display.max_column', None)
 pd.set_option('display.width', 1000)
-print(chipo.head())
+# print(chipo.head())
 # 找订单最多的商品；商品名称分组，对订单那数量求和后排序
-c1 = chipo.groupby('item_name').sum('quantity').sort_values(by='quantity', ascending=False);
-print(c1.head(1))
+# c1 = chipo.groupby('item_name').sum('quantity').sort_values(by='quantity', ascending=False);
+# print(c1.head(1))
+
+# 数据集中的这段时间内的收入是多少：价格*数量然后求和
+# 价格需要删除字符保留数组部分
+# chipo.item_price = chipo.item_price.apply(lambda x: float(x.replace("$", '')))
+# revenue = (chipo.quantity * chipo.item_price).sum()
+# print(revenue)
+# 数据中，共有多少订单
+# print(chipo.order_id.value_counts().count())
+# 每个订单的平均收入
+chipo.item_price = chipo.item_price.apply(lambda x: float(x.replace("$", '')))
+# 获得每个商品的收入作为一个新的列revenue
+chipo1 = chipo.assign(revenue=lambda x: x.quantity * x.item_price)
+# print(chipo1)
+print(chipo1.groupby("order_id").sum().mean()['revenue'])
+# print(chipo1.shape)
+# print(chipo1.revenue.sum()/chipo1.shape[0])
+#数据集中有多少不同的商品
+print(chipo.item_name.value_counts().count())
