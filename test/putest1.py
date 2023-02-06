@@ -28,8 +28,8 @@ class dlTestCase(unittest.TestCase):
         print(self.sdf.groupby("A").sum().mean())
 
     def test_jsonReTest(self):
-        str = '<script>__html__={"esa":[{"dsa":"DAS"}]}</script>'
-        g = re.search(r'(?<=__html__=).*(?=</script>)', str)
+        str = '<script>__INITIAL_STATE__={"esa":[{"dsa":"DAS"}]}</script>'
+        g = re.search(r'(?<=__INITIAL_STATE__=).*(?=</script>)', str)
         print(g, g.group(0))
         numbers = [1, 2, 3, 4, 5]
         print([num * num for num in numbers])
