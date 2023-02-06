@@ -38,5 +38,5 @@ chipo1 = chipo.assign(revenue=lambda x: x.quantity * x.item_price)
 print(chipo1.groupby("order_id").sum().mean()['revenue'])
 # print(chipo1.shape)
 # print(chipo1.revenue.sum()/chipo1.shape[0])
-#数据集中有多少不同的商品
+# 数据集中有多少不同的商品
 print(chipo.item_name.value_counts().count())
