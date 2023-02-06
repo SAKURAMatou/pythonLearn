@@ -14,6 +14,22 @@ chipo = pd.read_csv(dataName, sep='\t')
 pd.set_option('display.max_column', None)
 pd.set_option('display.width', 1000)
 print(chipo.head())
+print("*" * 10)
 # 找订单最多的商品；商品名称分组，对订单那数量求和后排序
-c1 = chipo.groupby('item_name').sum('quantity').sort_values(by='quantity', ascending=False);
-print(c1.head(1))
+# c1 = chipo.groupby('item_name').sum('quantity').sort_values(by='quantity', ascending=False)
+# print(c1.head(1)['quantity'])
+# choice_description 中订单最多的商品
+# ch2 = chipo.groupby("choice_description").sum('quantity').sort_values(by='quantity', ascending=False)
+# print(ch2.head())
+# 全部的订单数量
+# print(chipo['quantity'].sum())
+# print(chipo.quantity.sum())
+
+# 把价格的数据类型转化为float;价格的值包含了$2.39，需要做字符串切片获取对应的价格忽略符号
+# print(chipo.item_price.dtype)
+# chipo.item_price.astype("float64")
+chipo.item_price = chipo.item_price.apply(lambda x: float(x[1:]))
+print(chipo.item_price.dtype)
+
+# 数据中的所有数据收入是多少
+chipo.item_price * chipo.quantity
