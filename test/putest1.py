@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 import pandas as pd
+import re
 
 
 class dlTestCase(unittest.TestCase):
@@ -25,6 +26,13 @@ class dlTestCase(unittest.TestCase):
     def test_dl2(self):
         print(self.sdf.groupby("A").sum())
         print(self.sdf.groupby("A").sum().mean())
+
+    def test_jsonReTest(self):
+        str = '<script>__html__={"esa":[{"dsa":"DAS"}]}</script>'
+        g = re.search(r'(?<=__html__=).*(?=</script>)', str)
+        print(g, g.group(0))
+        numbers = [1, 2, 3, 4, 5]
+        print([num * num for num in numbers])
 
 
 if __name__ == "__main__":
