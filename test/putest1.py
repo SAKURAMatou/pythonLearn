@@ -34,6 +34,14 @@ class dlTestCase(unittest.TestCase):
         numbers = [1, 2, 3, 4, 5]
         print([num * num for num in numbers])
 
+    def test_unique(self):
+        df = pd.DataFrame({"A": [10, 20, 30, 40, 20, 50, 10, 40],
+                           "B": [10, 22, 30, 44, 20, 30, 50, 44],
+                           "C": [10, 55, 66, 77, 88, 50, 60, 75]})
+        print(df)
+        print(df.drop_duplicates())
+        print(df.drop_duplicates(['B', 'C']))
+
 
 if __name__ == "__main__":
     unittest.main()
