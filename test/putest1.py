@@ -42,6 +42,12 @@ class dlTestCase(unittest.TestCase):
         print(df.drop_duplicates())
         print(df.drop_duplicates(['B', 'C']))
 
+    def test_column(self):
+        df = self.sdf
+        # print(df['A'])
+        print("#" * 15)
+        print(df[['A', 'C']])
+
 
 if __name__ == "__main__":
     unittest.main()
