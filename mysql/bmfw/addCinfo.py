@@ -2,8 +2,8 @@ import datetime
 import random
 import uuid
 
-# from bmfwmodels import CnsCinfo
-from models_8 import CnsCinfo
+from bmfwmodels import CnsCinfo
+# from models_8 import CnsCinfo
 from faker import Faker
 
 from SerialnumGenerate import redisUtils, getSerialnum
@@ -17,6 +17,7 @@ class AddCinfo():
         cinfo = CnsCinfo()
         cinfo.ROWGUID = uuid.uuid4()
         cinfo.RQSTTITLE = self.fake.text(random.randint(10, 50))
+        cinfo.rqsttitle = cinfo.RQSTTITLE
         cinfo.RQSTCONTENT = self.fake.text(random.randint(100, 500))
         cinfo.RQSTSOURCE = 'WZ'
         cinfo.RQSTAREACODE = '3205'
@@ -24,6 +25,7 @@ class AddCinfo():
         cinfo.CSTATUS = '0'
         cinfo.RQSTPERSON = self.fake.name()
         cinfo.LINKNUMBER = self.fake.phone_number()
+        cinfo.RQSTNUMBER=cinfo.LINKNUMBER
         cinfo.CLIENGGUID = uuid.uuid4()
         cinfo.RQSTTIME = datetime.datetime.now()
         cinfo.ISSECRET = '0'
@@ -43,6 +45,8 @@ class AddCinfo():
 
         for i in range(count):
             cinfo = self.initCinfo()
+            cinfo.rqsttitle = cinfo.rqsttitle.replace('\n', ';')
+            cinfo.RQSTCONTENT = cinfo.RQSTCONTENT.replace('\n', ';')
             res.append(cinfo)
             resSQL.append(getInsertSql(cinfo))
 
