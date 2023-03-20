@@ -28,7 +28,8 @@ def main():
     url = 'https://apis.tianapi.com/networkhot/index?key=15b19428ba2998e261dbac04ec0501ab&'
     # 设置代理信息
     proxies = {
-        "http": "http://127.0.0.1:9090"
+        "http": "http://127.0.0.1:7890",
+        "https": "http://127.0.0.1:7890"
     }
     response = requests.get(url=url, headers={'Content-Type': 'application/json'}, proxies=proxies)
     # 获取返回值的数据，json格式
