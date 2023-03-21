@@ -1,6 +1,7 @@
 import json
 import threading
 from datetime import datetime
+from urllib import request
 
 import requests
 from requests.exceptions import ProxyError
@@ -28,15 +29,19 @@ def main():
     # 天行数据接口提供的网络API获取热搜数据，结果是list
     url = 'https://apis.tianapi.com/networkhot/index?key=15b19428ba2998e261dbac04ec0501ab&'
     # 设置代理信息
-    proxies = {
-        "http": "http://127.0.0.1:7890",
-        "https": "http://127.0.0.1:7890"
-    }
-    response = ""
-    try:
-        response = requests.get(url=url, headers={'Content-Type': 'application/json'})
-    except ProxyError:
-        response = requests.get(url=url, headers={'Content-Type': 'application/json'}, proxies=proxies)
+    # proxies = {
+    #     "http": "http://127.0.0.1:7890",
+    #     "https": "http://127.0.0.1:7890"
+    # }
+    proxies = request.getproxies()
+    response = requests.get(url=url, headers={'Content-Type': 'application/json'},
+                            proxies=proxies) if proxies else requests.get(url=url,
+                                                                          headers={'Content-Type': 'application/json'})
+
+    # try:
+    #     response = requests.get(url=url, headers={'Content-Type': 'application/json'})
+    # except ProxyError:
+    #     response = requests.get(url=url, headers={'Content-Type': 'application/json'}, proxies=proxies)
 
     # 获取返回值的数据，json格式
     resData = response.json()
