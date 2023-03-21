@@ -3,6 +3,7 @@ import threading
 from datetime import datetime
 
 import requests
+from requests.exceptions import ProxyError
 
 
 class WriteData(threading.Thread):
@@ -31,7 +32,12 @@ def main():
         "http": "http://127.0.0.1:7890",
         "https": "http://127.0.0.1:7890"
     }
-    response = requests.get(url=url, headers={'Content-Type': 'application/json'}, proxies=proxies)
+    response = ""
+    try:
+        response = requests.get(url=url, headers={'Content-Type': 'application/json'})
+    except ProxyError:
+        response = requests.get(url=url, headers={'Content-Type': 'application/json'}, proxies=proxies)
+
     # 获取返回值的数据，json格式
     resData = response.json()
     if resData['code'] != 200:
