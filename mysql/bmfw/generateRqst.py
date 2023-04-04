@@ -32,7 +32,7 @@ switchObj = {
 
 if __name__ == '__main__':
     commend = input("输入类型：")
-    if 'random' == commend:
+    if 'random' == commend.lower():
         generateContent(random.randint(100, 500))
         generateTitle(random.randint(2, 100))
     else:
