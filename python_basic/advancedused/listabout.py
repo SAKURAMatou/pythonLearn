@@ -97,3 +97,7 @@ class ListAboutTest(unittest.TestCase):
         chain_map = collections.ChainMap(dict1, dict2)
         for key, value in chain_map.items():
             print(key, value)
+
+    def test_advanced_func(self):
+        items1 = list(map(lambda x: x ** 2, filter(lambda x: x % 2, range(1, 10))))
+        print(items1)
