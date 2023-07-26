@@ -177,3 +177,88 @@ from fastapi import Cookie, Header
 @app.post("/headtest")
 async def read_items(user_agent: Union[str, None] = Header(default=None)):
     return {"User-Agent": user_agent}
+
+
+# 响应输出模型：接收的类型与 Pydantic 模型属性所声明的类型相同，因此它可以是一个 Pydantic 模型，但也可以是一个由 Pydantic 模型组成的 list，例如 List[Item]。
+# 响应输出模型作用：1、将输出数据转换为其声明的类型,2、校验数据，3、在api文档中展示
+
+# 定义输入，输出的模型对象
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: str
+    full_name: Union[str, None] = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: str
+    full_name: Union[str, None] = None
+
+
+# 不指定响应模型时，将返回和输入一样的模型，指定时，转化为输出模型
+# response_model_exclude_unset忽略响应模型中的默认空值；full_name默认空，当不设置时也会返回，设置时，为空则从返回字段中删除空值字段
+@app.post("/users/create", response_model=UserOut, response_model_exclude_unset=True, response_model_include={'email'})
+def create_user(user: UserIn):
+    return user
+
+
+# response_model_include 和 response_model_exclude接收由属性名称 str 组成的 set 进行忽略/指定特定返回字段操作
+# response_model除了是pydantic模型之外还可以是List[Item]，多个模型中的任意一个，任意的dict
+# from typing import Dict,List,Union
+# response_model=Dict[str, float]；response_model=Union[PlaneItem, CarItem]； response_model=Dict[str, float]
+
+
+# 表单请求
+# 需要先安装python-multipart： pip install python-multipart
+from fastapi import Form
+
+
+# 使用 Form 可以声明与 Body （及 Query、Path、Cookie）相同的元数据和验证
+@app.post("/login/")
+async def login(username: str = Form(), password: str = Form()):
+    print(username, password)
+    return {"username": username}
+
+
+# 文件上传
+from fastapi import UploadFile, File
+
+
+# 单个文件上传时接口入参名称和请求时文件的名称一致
+# 指定非必填 file: Union[UploadFile, None] = None或file: UploadFile = File(default=None)
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile = File(default=None, description="A file read as UploadFile"),
+                             username: str = Form(),
+                             password: str = Form()):
+    if file:
+        return {"filename": file.filename, "username": username}
+    else:
+        return {"username": username}
+
+
+# 多个文件上传时，指定入参类型是List[UploadFile];是一个参数files中包含多个文件对象
+@app.post("/uploadfiles/")
+async def create_upload_files(files: list[UploadFile]):
+    return {"filenames": [file.filename for file in files]}
+
+# UploadFile 接收文件优势：
+# 使用 spooled 文件；存储在内存的文件超出最大上限时，FastAPI 会把文件存入磁盘
+# 更适于处理图像、视频、二进制文件等大型文件，好处是不会占用所有内存
+# 获取上传文件的元数据
+# 自带file-like接口，（file-like object -- 文件类对象，python的文件对象）
+
+# UploadFile 的属性如下：
+#
+# filename：上传文件名字符串（str），例如， myimage.jpg；
+# content_type：内容类型（MIME 类型 / 媒体类型）字符串（str），例如，image/jpeg；
+# file： SpooledTemporaryFile（ file-like 对象）。其实就是 Python文件，可直接传递给其他预期 file-like 对象的函数或支持库。
+# UploadFile 支持以下 async 方法，（使用内部 SpooledTemporaryFile）可调用相应的文件方法。
+#
+# write(data)：把 data （str 或 bytes）写入文件；
+# read(size)：按指定数量的字节或字符（size (int)）读取文件内容；
+# seek(offset)：移动至文件 offset （int）字节处的位置；
+# 例如，await myfile.seek(0) 移动到文件开头；
+# 执行 await myfile.read() 后，需再次读取已读取内容时，这种方法特别好用；
+# close()：关闭文件。
+# 因为上述方法都是 async 方法，要搭配「await」使用。
