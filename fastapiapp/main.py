@@ -1,8 +1,9 @@
 import uvicorn
-from fastapi import FastAPI, Depends
-from .dependencies import get_token_headers, get_query_token
-from .routers import items, users
-from .internal import admin
+from fastapi import FastAPI, Depends, Request
+from fastapi.responses import JSONResponse
+from dependencies import get_query_token, MyException
+from routers import items, users
+from internal import admin
 
 # items和users中都有相同的变量名router，为了避免冲突，通过模块.变量名方式引用
 
@@ -17,6 +18,17 @@ app.include_router(admin.router,
                    prefix="/admin",
                    dependencies=[Depends(get_query_token)],
                    responses={418: {"description": "I'm a teapot"}}, )
+
+from sql_app import models
+from sql_app.database import engine
+
+# 根据模型创建数据表
+models.Base.metadata.create_all(bind=engine)
+
+
+@app.exception_handler(MyException)
+async def unicorn_exception_handler(request: Request, exc: MyException):
+    return JSONResponse(status_code=418, content={'message': f'全局异常处理返回信息：{exc.des}'})
 
 
 @app.get("/")
