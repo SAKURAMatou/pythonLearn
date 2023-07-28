@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+
 # 指定数据库地址
 SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
@@ -22,8 +23,10 @@ Base = declarative_base()
 # 每一个请求有一个独立的数据库会话/连接，在所有请求中使用相同的会话，然后在请求完成后关闭它
 
 def get_db():
-    db = SessionLocal()
-    try:
+    # db = SessionLocal()
+    # try:
+    #     yield db
+    # finally:
+    #     db.close()
+    with SessionLocal() as db:
         yield db
-    finally:
-        db.close()
