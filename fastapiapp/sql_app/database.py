@@ -4,14 +4,15 @@ from sqlalchemy.orm import sessionmaker
 
 
 # 指定数据库地址
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+SQLALCHEMY_DATABASE_URL = "postgresql://dml:dml_postgresql@192.168.233.5:5432/dml"
 
 # connect_args={"check_same_thread": False}SQLite 数据库设置的连接参数，它的作用是在单线程环境中禁用检查相同线程。这通常在开发和测试阶段使用。
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine=create_engine(SQLALCHEMY_DATABASE_URL)
+# engine = create_engine(
+#     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+# )
 
 # 创建数据库会话。数据库会话是与数据库进行交互的主要接口，我们可以使用会话来执行数据库查询、插入、更新和删除等操作。
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

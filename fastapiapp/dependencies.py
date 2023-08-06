@@ -11,6 +11,4 @@ async def get_query_token(token: str = Header()):
         raise HTTPException(status_code=400, detail="No Jessica token provided")
 
 
-class MyException(Exception):
-    def __init__(self, des: str):
-        self.des = des
+
